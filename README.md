@@ -2,6 +2,26 @@
 
 Le but de cet exercice est de maîtriser la création d'une base de données (BDD) qui sera utilisée dans une application web dynamique.
 
+## Install
+
+    git clone https://github.com/pierrooTH/ECF-library-project
+    cd ECF-library-project
+    composer install
+
+Après install du projet, créer le fichier `.env.local` et ajoutez-y les variables `APP_ENV` et `DATABASE_URL`.
+
+Créer la BDD avec PhpMyAdmin.
+
+Ensuite créer le schéma de la BDD et injectez les données de test avec la commande :
+
+    bin/dofilo.sh
+
+## Utilisation
+
+    symfony serve
+
+Ensuite visitez la page [http://localhost:8000](http://localhost:8000).
+
 ## Cahier des charges
 
 Création d'une BDD qui implémente la structure et les données ci-dessous.
