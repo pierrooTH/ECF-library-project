@@ -29,9 +29,16 @@ class AppFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
         $booksCount = 1000;
+        $authorCount = 500;
+        $authorPerBook = 2;
+        $genrePerBook = 77;
+        $genresArr = ['poésie', 'nouvelle', 'roman historique', "roman d'amour", "roman d'avanture", "sicence-fiction", 'fantasy', 'biographie', 'conte', 'témoignage', 'théâtre', 'essai', 'journal intime'];
         
         $this->loadAdmin($manager);
-        $books = $this->loadBooks($manager, $booksCount);
+        $authors = $this->loadAuthors($manager, $authorCount);
+        $books = $this->loadBooks($manager, $authors, $authorPerBook, $booksCount);
+        $genres = $this->loadGenres($manager, $genresArr, $books, $genrePerBook);
+        
 
         $manager->flush();
     }
@@ -45,73 +52,90 @@ class AppFixtures extends Fixture
 
         $manager->persist($user);
     }
-    
-    public function loadBooks(ObjectManager $manager, $count)
+
+    public function loadAuthors(ObjectManager $manager, int $count)
     {
-        $books = [];
+        $authors = [];
         $author = new Author();
-            $author->setFirstname('unknow');
-            $author->setLastname('unknow');
-        $author2 = new Author();    
-            $author2->setFirstname('Hugues');
-            $author2->setLastname('Cartier');
-        $author3 = new Author();
-            $author3->setFirstname('Armand');
-            $author3->setLastname('Lambert');
-        $author4 = new Author();
-            $author4->setFirstname('Thomas');
-            $author4->setLastname('Moitessier');
-        $manager->persist($author);
-        $manager->persist($author2);
-        $manager->persist($author3);
-        $manager->persist($author4);
-
-        $book = new Book();
-            $book->setTitle('Lorem ipsum dolor sit amet');
-            $book->setEditionYears('2010');
-            $book->setPagesNumber('100');
-            $book->setCodeIsbn('9785786930024');
-        $book2 = new Book();
-            $book2->setTitle('Consectetur adipiscing elit');
-            $book2->setEditionYears('2011');
-            $book2->setPagesNumber('150');
-            $book2->setCodeIsbn('9783817260935');
-        $book3 = new Book();
-            $book3->setTitle('Mihi quidem Antiochum');
-            $book3->setEditionYears('2012');
-            $book3->setPagesNumber('200');
-            $book3->setCodeIsbn('9782020493727');
-        $book4 = new Book();
-            $book4->setTitle('Quem audis satis belle');
-            $book4->setEditionYears('2013');
-            $book4->setPagesNumber('250');
-            $book4->setCodeIsbn('9794059561353');
-
-        $book->setAuthor($author);
-        $book2->setAuthor($author2);
-        $book3->setAuthor($author3);
-        $book4->setAuthor($author4);
-
-        $manager->persist($book);
-        $manager->persist($book2);
-        $manager->persist($book3);
-        $manager->persist($book4);
-
-        $books[] = $book;
-
-        $genre = ['poésie', 'nouvelle', 'roman historique', 
-        "roman d'amour", "roman d'avanture", 
-        'science-fiction', 'fantasy', 'biographie', 
-        'conte', 'témoignage', 'théâtre', 'essai', 'journal intime' ];
+            $author->setFirstname('nom inconnu');
+            $author->setLastname('');
+            $manager->persist($author);
+            $authors[] = $author;
+        $author = new Author();
+            $author->setFirstname('Hugues');
+            $author->setLastname('Cartier');
+            $manager->persist($author);
+            $authors[] = $author;
+        $author = new Author();
+            $author->setFirstname('Armand');
+            $author->setLastname('Lambert');
+            $manager->persist($author);
+            $authors[] = $author;
+        $author = new Author();
+            $author->setFirstname('Thomas');
+            $author->setLastname('Moitessier');
+            $manager->persist($author);
+            $authors[] = $author;
 
         for ($i = 4; $i < $count; $i++) {
             $author = new Author();
             $author->setFirstname($this->faker->firstname());
             $author->setLastname($this->faker->lastname());
             $manager->persist($author);
+            $authors[] = $author;
+        }
+        return $authors;
+    }
+    
+    public function loadBooks(ObjectManager $manager, array $authors, int $authorPerBook, int $count)
+    {
+        $books = [];
+        $authorIndex = 0;
+        $author = $authors[$authorIndex];
 
-            $genre = new Genre(); 
-            
+        $book = new Book();
+            $book->setTitle('Lorem ipsum dolor sit amet');
+            $book->setEditionYears('2010');
+            $book->setPagesNumber('100');
+            $book->setCodeIsbn('9785786930024');
+            $book->setAuthor($author);
+            $manager->persist($book);
+            $books[] = $book;
+
+        $book = new Book();
+            $book->setTitle('Consectetur adipiscing elit');
+            $book->setEditionYears('2011');
+            $book->setPagesNumber('150');
+            $book->setCodeIsbn('9783817260935');
+            $manager->persist($book);
+            $book->setAuthor($author);
+            $books[] = $book;
+        
+            $authorIndex++;
+
+        $book = new Book();
+            $book->setTitle('Mihi quidem Antiochum');
+            $book->setEditionYears('2012');
+            $book->setPagesNumber('200');
+            $book->setCodeIsbn('9782020493727');
+            $manager->persist($book);
+            $book->setAuthor($author);
+            $books[] = $book;
+        $book = new Book();
+            $book->setTitle('Quem audis satis belle');
+            $book->setEditionYears('2013');
+            $book->setPagesNumber('250');
+            $book->setCodeIsbn('9794059561353');
+            $manager->persist($book);
+            $book->setAuthor($author);
+            $books[] = $book;
+         for ($i = 4; $i < $count; $i++) {
+
+            $author = $authors[$authorIndex];
+
+            if ($i % $authorPerBook == 0) {
+                $authorIndex++;
+            }
             $book = new Book();
             $book->setTitle($this->faker->sentence($nbWords = 6, $variableNbWords = true));
             $book->setEditionYears($this->faker->year($max = 'now'));
@@ -122,5 +146,34 @@ class AppFixtures extends Fixture
             $manager->persist($book);
             $books[] = $book;
         }
+        return $books;
+    }
+    public function loadGenres(ObjectManager $manager, array $genresArr, array $books, int $genrePerBook)
+    {
+        foreach($genresArr as $i){
+            $bookIndex = 0;
+            $genres = [];
+
+            $genre = new Genre();
+            $genre->setName($i);
+
+            while (true) {
+                $book = $books[$bookIndex];
+                $genre->addBook($book);
+                
+                if (($bookIndex + 1) % $genrePerBook == 0) {
+                    $bookIndex++;
+                    break;
+                }
+    
+                $bookIndex++;
+            }
+            $manager->persist($genre);
+
+
+            $genres[] = $genre;
+
+        }
+        return $genres;
     }
 }
