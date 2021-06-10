@@ -150,24 +150,14 @@ class AppFixtures extends Fixture
     }
     public function loadGenres(ObjectManager $manager, array $genresArr, array $books, int $genrePerBook)
     {
-        foreach($genresArr as $i){
+        foreach($genresArr as $genre){
             $bookIndex = 0;
             $genres = [];
 
             $genre = new Genre();
-            $genre->setName($i);
+            $genre->setName($genre);
 
-            while (true) {
-                $book = $books[$bookIndex];
-                $genre->addBook($book);
-                
-                if (($bookIndex + 1) % $genrePerBook == 0) {
-                    $bookIndex++;
-                    break;
-                }
-    
-                $bookIndex++;
-            }
+            
             $manager->persist($genre);
 
 
