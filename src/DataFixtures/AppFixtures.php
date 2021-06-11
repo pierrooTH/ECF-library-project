@@ -32,12 +32,14 @@ class AppFixtures extends Fixture
         $authorCount = 500;
         $authorPerBook = 2;
         $genrePerBook = 77;
+        $borrowerCount = 100;
         $genresArr = ['poésie', 'nouvelle', 'roman historique', "roman d'amour", "roman d'avanture", "sicence-fiction", 'fantasy', 'biographie', 'conte', 'témoignage', 'théâtre', 'essai', 'journal intime'];
         
         $this->loadAdmin($manager);
         $authors = $this->loadAuthors($manager, $authorCount);
         $books = $this->loadBooks($manager, $authors, $authorPerBook, $booksCount);
-        $genres = $this->loadGenres($manager, $genresArr, $books, $genrePerBook);
+        $genres = $this->loadGenres($manager, $genresArr);
+        $borrowers = $this->loadBorrowers($manager, $borrowerCount);
         
 
         $manager->flush();
@@ -92,7 +94,6 @@ class AppFixtures extends Fixture
         $books = [];
         $authorIndex = 0;
         $author = $authors[$authorIndex];
-
         $book = new Book();
             $book->setTitle('Lorem ipsum dolor sit amet');
             $book->setEditionYears('2010');
@@ -109,9 +110,9 @@ class AppFixtures extends Fixture
             $book->setCodeIsbn('9783817260935');
             $manager->persist($book);
             $book->setAuthor($author);
-            $books[] = $book;
-        
-            $authorIndex++;
+            $books[] = $book;  
+
+        $authorIndex++;
 
         $book = new Book();
             $book->setTitle('Mihi quidem Antiochum');
@@ -148,22 +149,137 @@ class AppFixtures extends Fixture
         }
         return $books;
     }
-    public function loadGenres(ObjectManager $manager, array $genresArr, array $books, int $genrePerBook)
+
+    public function loadBorrowers(ObjectManager $manager, $count)
     {
-        foreach($genresArr as $genre){
-            $bookIndex = 0;
+        $borrowers = [];
+
+        $user = new User();
+        $user->setEmail('foo.foo@example.com');
+        // Hachage du mot de passe.
+        $password = $this->encoder->encodePassword($user, '123');
+        $user->setPassword($password);
+        // Le format de la chaîne de caractères ROLE_FOO_BAR_BAZ
+        // est libre mais il vaut mieux suivre la convention
+        // proposée par Symfony.
+        $user->setRoles(['ROLE_BORROWER']);
+        $manager->persist($user);
+
+        $borrower = new Borrower();
+            $borrower->setLastname('foo');
+            $borrower->setFirstname('foo');
+            $borrower->setPhoneNumber('123456789');
+            $borrower->setActive(true);
+            $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-01-01 10:00:00'));
+            $borrower->setUser($user);
+            $manager->persist($borrower);
+
+            $borrowers[] = $borrower;
+
+            $user = new User();
+            $user->setEmail('bar.bar@example.com');
+            // Hachage du mot de passe.
+            $password = $this->encoder->encodePassword($user, '123');
+            $user->setPassword($password);
+            // Le format de la chaîne de caractères ROLE_FOO_BAR_BAZ
+            // est libre mais il vaut mieux suivre la convention
+            // proposée par Symfony.
+            $user->setRoles(['ROLE_BORROWER']);
+            $manager->persist($user);
+
+        $borrower = new Borrower();
+            $borrower->setLastname('bar');
+            $borrower->setFirstname('bar');
+            $borrower->setPhoneNumber('123456789');
+            $borrower->setActive(false);
+            $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-02-01 11:00:00'));
+            $borrower->setModificationDate((\DateTime::createFromFormat('Y-m-d H:i:s', '2020-05-01 12:00:00')));
+            $borrower->setUser($user);
+            $manager->persist($borrower);
+            $borrowers[] = $borrower;
+
+            $user = new User();
+            $user->setEmail('baz.baz@example.com');
+            // Hachage du mot de passe.
+            $password = $this->encoder->encodePassword($user, '123');
+            $user->setPassword($password);
+            // Le format de la chaîne de caractères ROLE_FOO_BAR_BAZ
+            // est libre mais il vaut mieux suivre la convention
+            // proposée par Symfony.
+            $user->setRoles(['ROLE_BORROWER']);
+            $manager->persist($user);
+
+        $borrower = new Borrower();
+            $borrower->setLastname('baz');
+            $borrower->setFirstname('baz');
+            $borrower->setPhoneNumber('123456789');
+            $borrower->setActive(true);
+            $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 12:00:00'));
+            $borrower->setModificationDate(null);
+            $borrower->setUser($user);
+            $manager->persist($borrower);
+            $borrowers[] = $borrower;
+
+        for ($i = 3; $i < $count; $i++){
+            $user = new User();
+            $user->setEmail($this->faker->email());
+            $password = $this->encoder->encodePassword($user, '123');
+            $user->setPassword($password);
+            $user->setRoles(['ROLE_BORROWER']);
+            $manager->persist($user);
+
+            $borrower = new Borrower();
+                $borrower->setLastname($this->faker->lastname());
+                $borrower->setFirstname($this->faker->firstname());
+                $borrower->setPhoneNumber($this->faker->phoneNumber());
+                $borrower->setActive($this->faker->boolean());
+                $borrower->setCreationDate($this->faker->dateTimeThisDecade());
+
+                $creationDate = $borrower->getCreationDate();
+                $modificationDate = \DateTime::createFromFormat('Y-m-d H:i:s', $creationDate->format('Y-m-d H:i:s'));
+                $modificationDate->add(new \DateInterval('P4M'));
+                $borrower->setModificationDate($modificationDate);
+                $borrower->setUser($user);
+                $manager->persist($borrower);
+                $borrowers[] = $borrower;
+        }
+        return $borrowers;
+    }
+
+    public function loadGenres(ObjectManager $manager, array $genresArr)
+    {
+        foreach($genresArr as $i){
             $genres = [];
 
             $genre = new Genre();
-            $genre->setName($genre);
-
-            
+            $genre->setName($i);
             $manager->persist($genre);
-
-
             $genres[] = $genre;
 
         }
         return $genres;
     }
+
+    // public function loadLoans(ObjectManager $manager)
+    // {
+    //     $loans = [];
+    //     $loan = new Loan();
+    //     $loan = setLoanDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-02-01 10:00:00'));
+    //     $loan = setReturnDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 10:00:00'));
+    //     $manager->persist($loan);
+    //     $loans[] = $loan;
+
+    //     $loan = new Loan();
+    //     $loan = setLoanDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 10:00:00'));
+    //     $loan = setReturnDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-04-01 10:00:00'));
+    //     $manager->persist($loan);
+    //     $loans[] = $loan;
+
+    //     $loan = new Loan();
+    //     $loan = setLoanDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-04-01 10:00:00'));
+    //     $loan = setReturnDate(null);
+    //     $manager->persist($loan);
+    //     $loans[] = $loan;
+
+    // }
 }
