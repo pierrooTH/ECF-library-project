@@ -26,22 +26,17 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        // $product = new Product();
-        // $manager->persist($product);
         $booksCount = 1000;
         $authorCount = 500;
         $authorPerBook = 2;
         $genrePerBook = 77;
-        $borrowerCount = 100;
-        $genresArr = ['poésie', 'nouvelle', 'roman historique', "roman d'amour", "roman d'avanture", "sicence-fiction", 'fantasy', 'biographie', 'conte', 'témoignage', 'théâtre', 'essai', 'journal intime'];
+        $borrowerCount = 103;
         
         $this->loadAdmin($manager);
         $authors = $this->loadAuthors($manager, $authorCount);
         $books = $this->loadBooks($manager, $authors, $authorPerBook, $booksCount);
-        $genres = $this->loadGenres($manager, $genresArr);
+        //$genres = $this->loadGenres($manager);
         $borrowers = $this->loadBorrowers($manager, $borrowerCount);
-        
-
         $manager->flush();
     }
     public function loadAdmin(ObjectManager $manager)
@@ -51,7 +46,6 @@ class AppFixtures extends Fixture
         $password = $this->encoder->encodePassword($user, '123');
         $user->setPassword($password);
         $user->setRoles(['ROLE_ADMIN']);
-
         $manager->persist($user);
     }
 
@@ -59,8 +53,8 @@ class AppFixtures extends Fixture
     {
         $authors = [];
         $author = new Author();
-            $author->setFirstname('nom inconnu');
-            $author->setLastname('');
+            $author->setFirstname('');
+            $author->setLastname('nom inconnu');
             $manager->persist($author);
             $authors[] = $author;
         $author = new Author();
@@ -78,7 +72,6 @@ class AppFixtures extends Fixture
             $author->setLastname('Moitessier');
             $manager->persist($author);
             $authors[] = $author;
-
         for ($i = 4; $i < $count; $i++) {
             $author = new Author();
             $author->setFirstname($this->faker->firstname());
@@ -92,15 +85,16 @@ class AppFixtures extends Fixture
     public function loadBooks(ObjectManager $manager, array $authors, int $authorPerBook, int $count)
     {
         $books = [];
-        $authorIndex = 0;
-        $author = $authors[$authorIndex];
         $book = new Book();
             $book->setTitle('Lorem ipsum dolor sit amet');
             $book->setEditionYears('2010');
             $book->setPagesNumber('100');
             $book->setCodeIsbn('9785786930024');
+            $authorIndex =0;
+            $author = $authors[$authorIndex];
             $book->setAuthor($author);
             $manager->persist($book);
+
             $books[] = $book;
 
         $book = new Book();
@@ -109,17 +103,19 @@ class AppFixtures extends Fixture
             $book->setPagesNumber('150');
             $book->setCodeIsbn('9783817260935');
             $manager->persist($book);
+            $authorIndex = 1;
+            $author = $authors[$authorIndex];
             $book->setAuthor($author);
             $books[] = $book;  
-
         $authorIndex++;
-
         $book = new Book();
             $book->setTitle('Mihi quidem Antiochum');
             $book->setEditionYears('2012');
             $book->setPagesNumber('200');
             $book->setCodeIsbn('9782020493727');
             $manager->persist($book);
+            $authorIndex = 2;
+            $author = $authors[$authorIndex];
             $book->setAuthor($author);
             $books[] = $book;
         $book = new Book();
@@ -128,22 +124,24 @@ class AppFixtures extends Fixture
             $book->setPagesNumber('250');
             $book->setCodeIsbn('9794059561353');
             $manager->persist($book);
+            $authorIndex = 3;
+            $author = $authors[$authorIndex];
             $book->setAuthor($author);
             $books[] = $book;
+
+        $authorIndex = 1;
+
          for ($i = 4; $i < $count; $i++) {
-
             $author = $authors[$authorIndex];
-
             if ($i % $authorPerBook == 0) {
                 $authorIndex++;
             }
             $book = new Book();
             $book->setTitle($this->faker->sentence($nbWords = 6, $variableNbWords = true));
             $book->setEditionYears($this->faker->year($max = 'now'));
-            $book->setPagesNumber($this->faker->numberBetween($min = 100, $max = 1500));
+            $book->setPagesNumber($this->faker->numberBetween($min = 100, $max = 1050));
             $book->setCodeIsbn($this->faker->isbn13());
             $book->setAuthor($author);
-
             $manager->persist($book);
             $books[] = $book;
         }
@@ -156,12 +154,8 @@ class AppFixtures extends Fixture
 
         $user = new User();
         $user->setEmail('foo.foo@example.com');
-        // Hachage du mot de passe.
         $password = $this->encoder->encodePassword($user, '123');
         $user->setPassword($password);
-        // Le format de la chaîne de caractères ROLE_FOO_BAR_BAZ
-        // est libre mais il vaut mieux suivre la convention
-        // proposée par Symfony.
         $user->setRoles(['ROLE_BORROWER']);
         $manager->persist($user);
 
@@ -178,12 +172,8 @@ class AppFixtures extends Fixture
 
             $user = new User();
             $user->setEmail('bar.bar@example.com');
-            // Hachage du mot de passe.
             $password = $this->encoder->encodePassword($user, '123');
             $user->setPassword($password);
-            // Le format de la chaîne de caractères ROLE_FOO_BAR_BAZ
-            // est libre mais il vaut mieux suivre la convention
-            // proposée par Symfony.
             $user->setRoles(['ROLE_BORROWER']);
             $manager->persist($user);
 
@@ -197,15 +187,10 @@ class AppFixtures extends Fixture
             $borrower->setUser($user);
             $manager->persist($borrower);
             $borrowers[] = $borrower;
-
             $user = new User();
             $user->setEmail('baz.baz@example.com');
-            // Hachage du mot de passe.
             $password = $this->encoder->encodePassword($user, '123');
             $user->setPassword($password);
-            // Le format de la chaîne de caractères ROLE_FOO_BAR_BAZ
-            // est libre mais il vaut mieux suivre la convention
-            // proposée par Symfony.
             $user->setRoles(['ROLE_BORROWER']);
             $manager->persist($user);
 
@@ -234,7 +219,6 @@ class AppFixtures extends Fixture
                 $borrower->setPhoneNumber($this->faker->phoneNumber());
                 $borrower->setActive($this->faker->boolean());
                 $borrower->setCreationDate($this->faker->dateTimeThisDecade());
-
                 $creationDate = $borrower->getCreationDate();
                 $modificationDate = \DateTime::createFromFormat('Y-m-d H:i:s', $creationDate->format('Y-m-d H:i:s'));
                 $modificationDate->add(new \DateInterval('P4M'));
@@ -246,19 +230,18 @@ class AppFixtures extends Fixture
         return $borrowers;
     }
 
-    public function loadGenres(ObjectManager $manager, array $genresArr)
-    {
-        foreach($genresArr as $i){
-            $genres = [];
+    // public function loadGenres(ObjectManager $manager, array $genresArr)
+    // {
+    //     foreach($genresArr as $i){
+    //         $genres = [];
+    //         $genre = new Genre();
+    //         $genre->setName($i);
+    //         $manager->persist($genre);
+    //         $genres[] = $genre;
 
-            $genre = new Genre();
-            $genre->setName($i);
-            $manager->persist($genre);
-            $genres[] = $genre;
-
-        }
-        return $genres;
-    }
+    //     }
+    //     return $genres;
+    // }
 
     // public function loadLoans(ObjectManager $manager)
     // {
