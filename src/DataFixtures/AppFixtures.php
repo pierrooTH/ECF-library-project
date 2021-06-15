@@ -31,12 +31,14 @@ class AppFixtures extends Fixture
         $authorPerBook = 2;
         $genrePerBook = 77;
         $borrowerCount = 103;
+        $loanCount = 103;
         
         $this->loadAdmin($manager);
         $authors = $this->loadAuthors($manager, $authorCount);
-        $books = $this->loadBooks($manager, $authors, $authorPerBook, $booksCount);
-        //$genres = $this->loadGenres($manager);
+        $genres = $this->loadGenres($manager);
+        $books = $this->loadBooks($manager, $authors, $authorPerBook, $genres, $booksCount);
         $borrowers = $this->loadBorrowers($manager, $borrowerCount);
+        $loans = $this->loadLoans($manager, $borrowers, $books, $loanCount);
         $manager->flush();
     }
     public function loadAdmin(ObjectManager $manager)
@@ -81,10 +83,85 @@ class AppFixtures extends Fixture
         }
         return $authors;
     }
+
+    public function loadGenres(ObjectManager $manager)
+    {
+        
+        $genres = [];
+
+        $genre = new Genre();
+            $genre->setName('poésie');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('nouvelle');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('roman historique');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName("roman d'amour");
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName("roman d'avanture");
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('science-fiction');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('fantasy');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('biographie');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('conte');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('témoignage');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('théâtre');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('essai');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        $genre = new Genre();
+            $genre->setName('journal intime');
+        $manager->persist($genre);
+        $genres[] = $genre;
+
+        return $genres;
+
+    }
     
-    public function loadBooks(ObjectManager $manager, array $authors, int $authorPerBook, int $count)
+    public function loadBooks(ObjectManager $manager, array $authors, int $authorPerBook, array $genres, int $count)
     {
         $books = [];
+
         $book = new Book();
             $book->setTitle('Lorem ipsum dolor sit amet');
             $book->setEditionYears('2010');
@@ -93,6 +170,9 @@ class AppFixtures extends Fixture
             $authorIndex =0;
             $author = $authors[$authorIndex];
             $book->setAuthor($author);
+            $genreIndex = 0;
+            $genre = $genres[$genreIndex];
+            $book->addGenre($genre);
             $manager->persist($book);
 
             $books[] = $book;
@@ -102,31 +182,39 @@ class AppFixtures extends Fixture
             $book->setEditionYears('2011');
             $book->setPagesNumber('150');
             $book->setCodeIsbn('9783817260935');
-            $manager->persist($book);
             $authorIndex = 1;
             $author = $authors[$authorIndex];
             $book->setAuthor($author);
+            $genreIndex = 1;
+            $genre = $genres[$genreIndex];
+            $book->addGenre($genre);
+            $manager->persist($book);
             $books[] = $book;  
-        $authorIndex++;
         $book = new Book();
             $book->setTitle('Mihi quidem Antiochum');
             $book->setEditionYears('2012');
             $book->setPagesNumber('200');
             $book->setCodeIsbn('9782020493727');
-            $manager->persist($book);
             $authorIndex = 2;
             $author = $authors[$authorIndex];
             $book->setAuthor($author);
+            $genreIndex = 2;
+            $genre = $genres[$genreIndex];
+            $book->addGenre($genre);
+            $manager->persist($book);
             $books[] = $book;
         $book = new Book();
             $book->setTitle('Quem audis satis belle');
             $book->setEditionYears('2013');
             $book->setPagesNumber('250');
             $book->setCodeIsbn('9794059561353');
-            $manager->persist($book);
             $authorIndex = 3;
             $author = $authors[$authorIndex];
             $book->setAuthor($author);
+            $genreIndex = 3;
+            $genre = $genres[$genreIndex];
+            $book->addGenre($genre);
+            $manager->persist($book);
             $books[] = $book;
 
         $authorIndex = 1;
@@ -136,12 +224,19 @@ class AppFixtures extends Fixture
             if ($i % $authorPerBook == 0) {
                 $authorIndex++;
             }
+
             $book = new Book();
             $book->setTitle($this->faker->sentence($nbWords = 6, $variableNbWords = true));
             $book->setEditionYears($this->faker->year($max = 'now'));
             $book->setPagesNumber($this->faker->numberBetween($min = 100, $max = 1050));
             $book->setCodeIsbn($this->faker->isbn13());
             $book->setAuthor($author);
+
+            $genreCount = random_int(1,2);
+            $randomGenres = $this->faker->randomElements($genres, $genreCount);
+            foreach ($randomGenres as $randomGenre) {
+                $book->addGenre($randomGenre);
+            }
             $manager->persist($book);
             $books[] = $book;
         }
@@ -230,39 +325,68 @@ class AppFixtures extends Fixture
         return $borrowers;
     }
 
-    // public function loadGenres(ObjectManager $manager, array $genresArr)
-    // {
-    //     foreach($genresArr as $i){
-    //         $genres = [];
-    //         $genre = new Genre();
-    //         $genre->setName($i);
-    //         $manager->persist($genre);
-    //         $genres[] = $genre;
+    public function loadLoans(ObjectManager $manager, array $borrowers, array $books, int $count)
+    {
+        $loans = [];
 
-    //     }
-    //     return $genres;
-    // }
 
-    // public function loadLoans(ObjectManager $manager)
-    // {
-    //     $loans = [];
-    //     $loan = new Loan();
-    //     $loan = setLoanDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-02-01 10:00:00'));
-    //     $loan = setReturnDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 10:00:00'));
-    //     $manager->persist($loan);
-    //     $loans[] = $loan;
+        $loan = new Loan();
+            $loan->setLoanDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-02-01 10:00:00'));
+            $loan->setReturnDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 10:00:00'));
+            $bookIndex = 0;
+            $book = $books[$bookIndex];
+            $loan->setBook($book);
+            $borrowerIndex = 0;
+            $borrower = $borrowers[$borrowerIndex];
+            $loan->setBorrower($borrower);
+            $manager->persist($loan);
+            $loans[] = $loan;
 
-    //     $loan = new Loan();
-    //     $loan = setLoanDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 10:00:00'));
-    //     $loan = setReturnDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-04-01 10:00:00'));
-    //     $manager->persist($loan);
-    //     $loans[] = $loan;
+            $loan = new Loan();
+            $loan->setLoanDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 10:00:00'));
+            $loan->setReturnDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-04-01 10:00:00'));
+            $bookIndex = 1;
+            $book = $books[$bookIndex];
+            $loan->setBook($book);
+            $borrowerIndex = 1;
+            $borrower = $borrowers[$borrowerIndex];
+            $loan->setBorrower($borrower);
+            $manager->persist($loan);
+            $loans[] = $loan;
 
-    //     $loan = new Loan();
-    //     $loan = setLoanDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-04-01 10:00:00'));
-    //     $loan = setReturnDate(null);
-    //     $manager->persist($loan);
-    //     $loans[] = $loan;
+            $loan = new Loan();
+            $loan->setLoanDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-04-01 10:00:00'));
+            $loan->setReturnDate(null);
+            $bookIndex = 2;
+            $book = $books[$bookIndex];
+            $loan->setBook($book);
+            $borrowerIndex = 2;
+            $borrower = $borrowers[$borrowerIndex];
+            $loan->setBorrower($borrower);
+            $manager->persist($loan);
+            $loans[] = $loan;
 
-    // }
+            for ($i = 3; $i < $count; $i++) {
+                $bookIndex++;
+                $borrowerIndex++;
+                $book = $books[$bookIndex];
+                $borrower = $borrowers[$borrowerIndex];
+
+                $loan = new Loan();
+                $loan->setLoanDate($this->faker->dateTimeThisDecade());
+                $loanDate = $loan->getLoanDate();
+                $returnDate = \DateTime::createFromFormat('Y-m-d H:i:s', $loanDate->format('Y-m-d H:i:s'));
+                $returnDate->add(new \DateInterval('P3M'));
+                $loan->setReturnDate($returnDate);
+                $loan->setBook($book);
+                $loan->setBorrower($borrower);
+                $manager->persist($loan);
+                $loans[] = $loan;
+            }
+
+        return $loans;
+    }
+
+
+
 }
