@@ -12,4 +12,4 @@ php bin/console doctrine:schema:validate
 # chmod +x bin/domimi.sh
 
 # injection des données de test dans la BDD
-php bin/console doctrine:fixtures:load --no-interaction
+php bin/console doctrine:fixtures:load --group=test --no-interaction

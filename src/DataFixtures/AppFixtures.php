@@ -9,11 +9,12 @@ use App\Entity\Genre;
 use App\Entity\Loan;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory as FakerFactory;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class AppFixtures extends Fixture
+class AppFixtures extends Fixture implements FixtureGroupInterface
 {
     private $encoder;
     private $faker;
@@ -22,6 +23,11 @@ class AppFixtures extends Fixture
     {
         $this->encoder = $encoder;
         $this->faker = FakerFactory::create('fr_FR');
+    }
+
+    public static function getGroups(): array
+    {
+        return ['test'];
     }
 
     public function load(ObjectManager $manager)
@@ -86,7 +92,6 @@ class AppFixtures extends Fixture
 
     public function loadGenres(ObjectManager $manager)
     {
-        
         $genres = [];
 
         $genre = new Genre();
@@ -174,7 +179,6 @@ class AppFixtures extends Fixture
             $genre = $genres[$genreIndex];
             $book->addGenre($genre);
             $manager->persist($book);
-
             $books[] = $book;
 
         $book = new Book();
@@ -190,6 +194,7 @@ class AppFixtures extends Fixture
             $book->addGenre($genre);
             $manager->persist($book);
             $books[] = $book;  
+
         $book = new Book();
             $book->setTitle('Mihi quidem Antiochum');
             $book->setEditionYears('2012');
@@ -203,6 +208,7 @@ class AppFixtures extends Fixture
             $book->addGenre($genre);
             $manager->persist($book);
             $books[] = $book;
+
         $book = new Book();
             $book->setTitle('Quem audis satis belle');
             $book->setEditionYears('2013');
@@ -282,6 +288,7 @@ class AppFixtures extends Fixture
             $borrower->setUser($user);
             $manager->persist($borrower);
             $borrowers[] = $borrower;
+
             $user = new User();
             $user->setEmail('baz.baz@example.com');
             $password = $this->encoder->encodePassword($user, '123');
@@ -386,7 +393,4 @@ class AppFixtures extends Fixture
 
         return $loans;
     }
-
-
-
 }
