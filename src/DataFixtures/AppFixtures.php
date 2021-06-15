@@ -37,14 +37,15 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         $authorPerBook = 2;
         $genrePerBook = 77;
         $borrowerCount = 103;
-        $loanCount = 103;
+        $loanCount = 203;
+        $loanPerBorrower = 2;
         
         $this->loadAdmin($manager);
         $authors = $this->loadAuthors($manager, $authorCount);
         $genres = $this->loadGenres($manager);
         $books = $this->loadBooks($manager, $authors, $authorPerBook, $genres, $booksCount);
         $borrowers = $this->loadBorrowers($manager, $borrowerCount);
-        $loans = $this->loadLoans($manager, $borrowers, $books, $loanCount);
+        $loans = $this->loadLoans($manager, $borrowers, $books, $loanPerBorrower, $loanCount);
         $manager->flush();
     }
     public function loadAdmin(ObjectManager $manager)
@@ -308,16 +309,20 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             $borrowers[] = $borrower;
 
         for ($i = 3; $i < $count; $i++){
+
+            $lastname = $this->faker->lastname();
+            $firstname = $this->faker->firstname();
+
             $user = new User();
-            $user->setEmail($this->faker->email());
+            $user->setEmail($lastname.'.'.$firstname.'@'.$this->faker->safeEmailDomain());
             $password = $this->encoder->encodePassword($user, '123');
             $user->setPassword($password);
             $user->setRoles(['ROLE_BORROWER']);
             $manager->persist($user);
 
             $borrower = new Borrower();
-                $borrower->setLastname($this->faker->lastname());
-                $borrower->setFirstname($this->faker->firstname());
+                $borrower->setLastname($lastname);
+                $borrower->setFirstname($firstname);
                 $borrower->setPhoneNumber($this->faker->phoneNumber());
                 $borrower->setActive($this->faker->boolean());
                 $borrower->setCreationDate($this->faker->dateTimeThisDecade());
@@ -332,7 +337,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         return $borrowers;
     }
 
-    public function loadLoans(ObjectManager $manager, array $borrowers, array $books, int $count)
+    public function loadLoans(ObjectManager $manager, array $borrowers, array $books, int $loanPerBorrower, int $count)
     {
         $loans = [];
 
@@ -373,11 +378,17 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             $manager->persist($loan);
             $loans[] = $loan;
 
+            $bookIndex++;
+            $borrowerIndex++;
+
             for ($i = 3; $i < $count; $i++) {
-                $bookIndex++;
-                $borrowerIndex++;
                 $book = $books[$bookIndex];
+                $bookIndex++;
                 $borrower = $borrowers[$borrowerIndex];
+
+                if ($i % $loanPerBorrower == 0) {
+                    $borrowerIndex++;
+                }
 
                 $loan = new Loan();
                 $loan->setLoanDate($this->faker->dateTimeThisDecade());
