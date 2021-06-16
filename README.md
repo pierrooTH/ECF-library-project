@@ -51,6 +51,8 @@ Relations :
 
 - aucune
 
+Données de test : 100 users dont les données sont générées aléatoirement
+
 ### Livre
 
 Attributs :
