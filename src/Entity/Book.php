@@ -51,7 +51,7 @@ class Book
     private $genres;
 
     /**
-     * @ORM\OneToMany(targetEntity=Loan::class, mappedBy="book")
+     * @ORM\OneToMany(targetEntity=Loan::class, mappedBy="book", cascade={"persist", "remove"})
      */
     private $loans;
 
@@ -176,7 +176,6 @@ class Book
                 $loan->setBook(null);
             }
         }
-
         return $this;
     }
 }

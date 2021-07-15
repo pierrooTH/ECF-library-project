@@ -47,4 +47,39 @@ class BookRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByGenres($value)
+    {
+        return $this->createQueryBuilder('b')
+            ->innerJoin('b.genres', 'g')
+            ->andWhere('g.name LIKE :genre')
+            ->setParameter('genre', "%{$value}%")
+            ->orderBy('b.title', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByTitle(string $value)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.title LIKE :title')
+            ->setParameter('title', "%{$value}%")
+            ->orderBy('b.title', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByAuthor($id)
+    {
+        return $this->createQueryBuilder('b')
+        ->innerJoin('b.author', 'a')
+        ->andWhere('a.id = :authorId')
+        ->setParameter('authorId', $id)
+        ->orderBy('b.title', 'ASC')
+        ->getQuery()
+        ->getResult()
+        ; 
+    }
 }

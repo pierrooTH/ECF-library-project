@@ -14,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BorrowerRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Borrower::class);
@@ -47,4 +48,54 @@ class BorrowerRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByFirstnameOrLastname($value)
+    {
+        
+        $qb = $this->createQueryBuilder('s');
+
+        return $qb->where($qb->expr()->orX(
+                $qb->expr()->like('s.firstname', ':value'),
+                $qb->expr()->like('s.lastname', ':value')
+            ))
+           
+            ->setParameter('value', "%{$value}%")
+            ->orderBy('s.firstname', 'ASC')
+            ->orderBy('s.lastname', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    public function findByPhoneNumber(string $value)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.phoneNumber LIKE :phoneNumber')
+            ->setParameter('phoneNumber', "%{$value}%")
+            ->orderBy('b.lastname', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findOneByActive(Boolean $value)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.active = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function findOneByDate(string $value)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.creationDate < :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    
 }

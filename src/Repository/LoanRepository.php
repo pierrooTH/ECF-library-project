@@ -47,4 +47,56 @@ class LoanRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findByLoan()
+    {
+        return $this->createQueryBuilder('l')
+            ->orderBy('l.loanDate', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByBorrower(string $value)
+    {
+        return $this->createQueryBuilder('l')
+            ->innerJoin('l.borrower', 'k')
+            ->andWhere('k.id = :value')
+            ->setParameter('value', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByBook(string $value)
+    {
+        return $this->createQueryBuilder('l')
+            ->innerJoin('l.book', 'k')
+            ->andWhere('k.id = :value')
+            ->setParameter('value', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByReturnDate(string $value)
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.returnDate < :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findByIdAndReturnDate(int $value)
+    {
+        return $this->createQueryBuilder('l')
+            ->where('l.id = :val')
+            ->andWhere('l.returnDate IS NULL')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
