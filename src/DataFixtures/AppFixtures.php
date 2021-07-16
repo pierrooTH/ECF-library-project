@@ -62,25 +62,29 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
     {
         $authors = [];
         $author = new Author();
-            $author->setFirstname('');
-            $author->setLastname('nom inconnu');
-            $manager->persist($author);
-            $authors[] = $author;
+        $author->setFirstname('');
+        $author->setLastname('nom inconnu');
+        $manager->persist($author);
+        $authors[] = $author;
+
         $author = new Author();
-            $author->setFirstname('Hugues');
-            $author->setLastname('Cartier');
-            $manager->persist($author);
-            $authors[] = $author;
+        $author->setFirstname('Hugues');
+        $author->setLastname('Cartier');
+        $manager->persist($author);
+        $authors[] = $author;
+
         $author = new Author();
-            $author->setFirstname('Armand');
-            $author->setLastname('Lambert');
-            $manager->persist($author);
-            $authors[] = $author;
+        $author->setFirstname('Armand');
+        $author->setLastname('Lambert');
+        $manager->persist($author);
+        $authors[] = $author;
+
         $author = new Author();
-            $author->setFirstname('Thomas');
-            $author->setLastname('Moitessier');
-            $manager->persist($author);
-            $authors[] = $author;
+        $author->setFirstname('Thomas');
+        $author->setLastname('Moitessier');
+        $manager->persist($author);
+        $authors[] = $author;
+
         for ($i = 4; $i < $count; $i++) {
             $author = new Author();
             $author->setFirstname($this->faker->firstname());
@@ -96,57 +100,57 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         $genres = [];
 
         $genre = new Genre();
-            $genre->setName('poésie');
+        $genre->setName('poésie');
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName('nouvelle');
+        $genre->setName('nouvelle');
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName('roman historique');
+        $genre->setName('roman historique');
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName("roman d'amour");
+        $genre->setName("roman d'amour");
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName("roman d'avanture");
+        $genre->setName("roman d'avanture");
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName('science-fiction');
+        $genre->setName('science-fiction');
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName('fantasy');
+        $genre->setName('fantasy');
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName('biographie');
+        $genre->setName('biographie');
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName('conte');
+        $genre->setName('conte');
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName('témoignage');
+        $genre->setName('témoignage');
         $manager->persist($genre);
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName('théâtre');
+        $genre->setName('théâtre');
         $manager->persist($genre);
         $genres[] = $genre;
 
@@ -156,7 +160,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         $genres[] = $genre;
 
         $genre = new Genre();
-            $genre->setName('journal intime');
+        $genre->setName('journal intime');
         $manager->persist($genre);
         $genres[] = $genre;
 
@@ -169,60 +173,60 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         $books = [];
 
         $book = new Book();
-            $book->setTitle('Lorem ipsum dolor sit amet');
-            $book->setEditionYears('2010');
-            $book->setPagesNumber('100');
-            $book->setCodeIsbn('9785786930024');
-            $authorIndex =0;
-            $author = $authors[$authorIndex];
-            $book->setAuthor($author);
-            $genreIndex = 0;
-            $genre = $genres[$genreIndex];
-            $book->addGenre($genre);
-            $manager->persist($book);
-            $books[] = $book;
+        $book->setTitle('Lorem ipsum dolor sit amet');
+        $book->setEditionYears('2010');
+        $book->setPagesNumber('100');
+        $book->setCodeIsbn('9785786930024');
+        $authorIndex =0;
+        $author = $authors[$authorIndex];
+        $book->setAuthor($author);
+        $genreIndex = 0;
+        $genre = $genres[$genreIndex];
+        $book->addGenre($genre);
+        $manager->persist($book);
+        $books[] = $book;
 
         $book = new Book();
-            $book->setTitle('Consectetur adipiscing elit');
-            $book->setEditionYears('2011');
-            $book->setPagesNumber('150');
-            $book->setCodeIsbn('9783817260935');
-            $authorIndex = 1;
-            $author = $authors[$authorIndex];
-            $book->setAuthor($author);
-            $genreIndex = 1;
-            $genre = $genres[$genreIndex];
-            $book->addGenre($genre);
-            $manager->persist($book);
-            $books[] = $book;  
+        $book->setTitle('Consectetur adipiscing elit');
+        $book->setEditionYears('2011');
+        $book->setPagesNumber('150');
+        $book->setCodeIsbn('9783817260935');
+        $authorIndex = 1;
+        $author = $authors[$authorIndex];
+        $book->setAuthor($author);
+        $genreIndex = 1;
+        $genre = $genres[$genreIndex];
+        $book->addGenre($genre);
+        $manager->persist($book);
+        $books[] = $book;  
 
         $book = new Book();
-            $book->setTitle('Mihi quidem Antiochum');
-            $book->setEditionYears('2012');
-            $book->setPagesNumber('200');
-            $book->setCodeIsbn('9782020493727');
-            $authorIndex = 2;
-            $author = $authors[$authorIndex];
-            $book->setAuthor($author);
-            $genreIndex = 2;
-            $genre = $genres[$genreIndex];
-            $book->addGenre($genre);
-            $manager->persist($book);
-            $books[] = $book;
+        $book->setTitle('Mihi quidem Antiochum');
+        $book->setEditionYears('2012');
+        $book->setPagesNumber('200');
+        $book->setCodeIsbn('9782020493727');
+        $authorIndex = 2;
+        $author = $authors[$authorIndex];
+        $book->setAuthor($author);
+        $genreIndex = 2;
+        $genre = $genres[$genreIndex];
+        $book->addGenre($genre);
+        $manager->persist($book);
+        $books[] = $book;
 
         $book = new Book();
-            $book->setTitle('Quem audis satis belle');
-            $book->setEditionYears('2013');
-            $book->setPagesNumber('250');
-            $book->setCodeIsbn('9794059561353');
-            $authorIndex = 3;
-            $author = $authors[$authorIndex];
-            $book->setAuthor($author);
-            $genreIndex = 3;
-            $genre = $genres[$genreIndex];
-            $book->addGenre($genre);
-            $manager->persist($book);
-            $books[] = $book;
+        $book->setTitle('Quem audis satis belle');
+        $book->setEditionYears('2013');
+        $book->setPagesNumber('250');
+        $book->setCodeIsbn('9794059561353');
+        $authorIndex = 3;
+        $author = $authors[$authorIndex];
+        $book->setAuthor($author);
+        $genreIndex = 3;
+        $genre = $genres[$genreIndex];
+        $book->addGenre($genre);
+        $manager->persist($book);
+        $books[] = $book;
 
         $authorIndex = 1;
 
@@ -262,51 +266,50 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         $manager->persist($user);
 
         $borrower = new Borrower();
-            $borrower->setLastname('foo');
-            $borrower->setFirstname('foo');
-            $borrower->setPhoneNumber('123456789');
-            $borrower->setActive(true);
-            $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-01-01 10:00:00'));
-            $borrower->setUser($user);
-            $manager->persist($borrower);
+        $borrower->setLastname('foo');
+        $borrower->setFirstname('foo');
+        $borrower->setPhoneNumber('123456789');
+        $borrower->setActive(true);
+        $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-01-01 10:00:00'));
+        $borrower->setUser($user);
+        $manager->persist($borrower);
+        $borrowers[] = $borrower;
 
-            $borrowers[] = $borrower;
-
-            $user = new User();
-            $user->setEmail('bar.bar@example.com');
-            $password = $this->encoder->encodePassword($user, '123');
-            $user->setPassword($password);
-            $user->setRoles(['ROLE_BORROWER']);
-            $manager->persist($user);
-
-        $borrower = new Borrower();
-            $borrower->setLastname('bar');
-            $borrower->setFirstname('bar');
-            $borrower->setPhoneNumber('123456789');
-            $borrower->setActive(false);
-            $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-02-01 11:00:00'));
-            $borrower->setModificationDate((\DateTime::createFromFormat('Y-m-d H:i:s', '2020-05-01 12:00:00')));
-            $borrower->setUser($user);
-            $manager->persist($borrower);
-            $borrowers[] = $borrower;
-
-            $user = new User();
-            $user->setEmail('baz.baz@example.com');
-            $password = $this->encoder->encodePassword($user, '123');
-            $user->setPassword($password);
-            $user->setRoles(['ROLE_BORROWER']);
-            $manager->persist($user);
+        $user = new User();
+        $user->setEmail('bar.bar@example.com');
+        $password = $this->encoder->encodePassword($user, '123');
+        $user->setPassword($password);
+        $user->setRoles(['ROLE_BORROWER']);
+        $manager->persist($user);
 
         $borrower = new Borrower();
-            $borrower->setLastname('baz');
-            $borrower->setFirstname('baz');
-            $borrower->setPhoneNumber('123456789');
-            $borrower->setActive(true);
-            $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 12:00:00'));
-            $borrower->setModificationDate(null);
-            $borrower->setUser($user);
-            $manager->persist($borrower);
-            $borrowers[] = $borrower;
+        $borrower->setLastname('bar');
+        $borrower->setFirstname('bar');
+        $borrower->setPhoneNumber('123456789');
+        $borrower->setActive(false);
+        $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-02-01 11:00:00'));
+        $borrower->setModificationDate((\DateTime::createFromFormat('Y-m-d H:i:s', '2020-05-01 12:00:00')));
+        $borrower->setUser($user);
+        $manager->persist($borrower);
+        $borrowers[] = $borrower;
+
+        $user = new User();
+        $user->setEmail('baz.baz@example.com');
+        $password = $this->encoder->encodePassword($user, '123');
+        $user->setPassword($password);
+        $user->setRoles(['ROLE_BORROWER']);
+        $manager->persist($user);
+
+        $borrower = new Borrower();
+        $borrower->setLastname('baz');
+        $borrower->setFirstname('baz');
+        $borrower->setPhoneNumber('123456789');
+        $borrower->setActive(true);
+        $borrower->setCreationDate(\DateTime::createFromFormat('Y-m-d H:i:s', '2020-03-01 12:00:00'));
+        $borrower->setModificationDate(null);
+        $borrower->setUser($user);
+        $manager->persist($borrower);
+        $borrowers[] = $borrower;
 
         for ($i = 3; $i < $count; $i++){
 
@@ -321,18 +324,18 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             $manager->persist($user);
 
             $borrower = new Borrower();
-                $borrower->setLastname($lastname);
-                $borrower->setFirstname($firstname);
-                $borrower->setPhoneNumber($this->faker->phoneNumber());
-                $borrower->setActive($this->faker->boolean());
-                $borrower->setCreationDate($this->faker->dateTimeThisDecade());
-                $creationDate = $borrower->getCreationDate();
-                $modificationDate = \DateTime::createFromFormat('Y-m-d H:i:s', $creationDate->format('Y-m-d H:i:s'));
-                $modificationDate->add(new \DateInterval('P4M'));
-                $borrower->setModificationDate($modificationDate);
-                $borrower->setUser($user);
-                $manager->persist($borrower);
-                $borrowers[] = $borrower;
+            $borrower->setLastname($lastname);
+            $borrower->setFirstname($firstname);
+            $borrower->setPhoneNumber($this->faker->phoneNumber());
+            $borrower->setActive($this->faker->boolean());
+            $borrower->setCreationDate($this->faker->dateTimeThisDecade());
+            $creationDate = $borrower->getCreationDate();
+            $modificationDate = \DateTime::createFromFormat('Y-m-d H:i:s', $creationDate->format('Y-m-d H:i:s'));
+            $modificationDate->add(new \DateInterval('P4M'));
+            $borrower->setModificationDate($modificationDate);
+            $borrower->setUser($user);
+            $manager->persist($borrower);
+            $borrowers[] = $borrower;
         }
         return $borrowers;
     }
