@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Author;
 use App\Entity\Book;
+use App\Entity\Genre;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -19,21 +20,30 @@ class BookType extends AbstractType
             ->add('editionYears')
             ->add('pagesNumber')
             ->add('codeIsbn')
-            ->add('author')
-            // Déclaration d'un champ EntityType
             ->add('author', EntityType::class, [
                   'class' => Author::class,
                      'choice_label' => function(Author $author) {
-                         return "{$author->getLastname()}";
+                         return "{$author->getFirstname()} {$author->getLastname()}";
                      },
                      'query_builder' => function (EntityRepository $er) {
-                         return $er->createQueryBuilder('s')
-                             ->orderBy('s.lastname', 'ASC')
+                         return $er->createQueryBuilder('a')
+                         ->orderBy('a.firstname', 'ASC')
+                         ->orderBy('a.lastname', 'ASC')
                          ;
                      },
             ])
-            //->add('genres')
-        ;
+            ->add('genres', EntityType::class, [
+                'class' => Genre::class,
+                'choice_label' => function(Genre $genre) {
+                return "{$genre->getName()}";
+                },
+                'query_builder' => function (EntityRepository $er) {
+                return $er->createQueryBuilder('b')
+                ->orderBy('b.name', 'ASC');
+                },
+                'multiple' => true,
+                'expanded' => true,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
