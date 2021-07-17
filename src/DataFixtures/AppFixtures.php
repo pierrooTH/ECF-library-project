@@ -97,8 +97,6 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
 
     public function loadGenres(ObjectManager $manager)
     {
-        $genres = [];
-
         $genre = new Genre();
         $genre->setName('poésie');
         $manager->persist($genre);
