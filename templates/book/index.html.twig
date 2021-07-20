@@ -3,11 +3,11 @@
 {% block title %}Book index{% endblock %}
 
 {% block body %}
-    <h1>Book index</h1>
+    <h1 class="title">Book index</h1>
 
-    <table class="table">
+    <table class="table table-hover">
         <thead>
-            <tr>
+            <tr class='table-secondary'>
                 <th>Id</th>
                 <th>Title</th>
                 <th>EditionYears</th>
@@ -18,24 +18,29 @@
         </thead>
         <tbody>
         {% for book in books %}
-            <tr>
+            <tr class='table-secondary'>
                 <td>{{ book.id }}</td>
-                <td>{{ book.title }}</td>
+                <td><a href="{{ path('book_show', {'id': book.id}) }}">{{ book.title }}</a></td>
                 <td>{{ book.editionYears }}</td>
                 <td>{{ book.pagesNumber }}</td>
                 <td>{{ book.codeIsbn }}</td>
                 <td>
                     <a href="{{ path('book_show', {'id': book.id}) }}">show</a>
+                {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
+                {% endif %}
                 </td>
             </tr>
         {% else %}
-            <tr>
+            <tr class='table-secondary'>
                 <td colspan="6">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('book_new') }}">Create new</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('book_new') }}">Create new</a>
+    {% endif %}
+    {{ knp_pagination_render(books) }}
 {% endblock %}

@@ -3,11 +3,11 @@
 {% block title %}Author index{% endblock %}
 
 {% block body %}
-    <h1>Author index</h1>
+    <h1 class="title">Author index</h1>
 
-    <table class="table">
+    <table class="table table-hover">
         <thead>
-            <tr>
+            <tr class='table-secondary'>
                 <th>Id</th>
                 <th>Lastname</th>
                 <th>Firstname</th>
@@ -16,22 +16,27 @@
         </thead>
         <tbody>
         {% for author in authors %}
-            <tr>
+            <tr class='table-secondary'>
                 <td>{{ author.id }}</td>
                 <td>{{ author.lastname }}</td>
                 <td>{{ author.firstname }}</td>
                 <td>
                     <a href="{{ path('author_show', {'id': author.id}) }}">show</a>
+                    {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('author_edit', {'id': author.id}) }}">edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
-            <tr>
+            <tr class="table-dark">
                 <td colspan="4">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
+    {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('author_new') }}">Create new</a>
+    {% endif %}
+    {{ knp_pagination_render(authors) }}
 {% endblock %}

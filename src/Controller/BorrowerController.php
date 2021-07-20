@@ -3,12 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\Borrower;
+use App\Entity\User;
 use App\Form\BorrowerType;
 use App\Repository\BorrowerRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface; 
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 /**
  * @Route("/borrower")
@@ -18,23 +23,42 @@ class BorrowerController extends AbstractController
     /**
      * @Route("/", name="borrower_index", methods={"GET"})
      */
-    public function index(BorrowerRepository $borrowerRepository): Response
+    public function index(BorrowerRepository $borrowerRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        // return $this->render('borrower/index.html.twig', [
+        //     'borrowers' => $borrowerRepository->findAll(),
+        // ]);
+
+        $donnees = $this->getDoctrine()->getRepository(Borrower::class)->findBy([],['id' => 'ASC']);
+
+        $borrower = $paginator->paginate(
+            $donnees, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            15 // Nombre de résultats par page
+        );
+        
         return $this->render('borrower/index.html.twig', [
-            'borrowers' => $borrowerRepository->findAll(),
+            'borrowers' => $borrower,
         ]);
     }
 
     /**
      * @Route("/new", name="borrower_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $borrower = new Borrower();
         $form = $this->createForm(BorrowerType::class, $borrower);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $borrower->getUser();
+            $user->setPassword(
+                $passwordEncoder->encodePassword(
+                    $user,
+                    $form->get('user')->get('plainPassword')->getData()
+                )
+            );
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($borrower);
             $entityManager->flush();
@@ -91,4 +115,5 @@ class BorrowerController extends AbstractController
 
         return $this->redirectToRoute('borrower_index');
     }
+
 }

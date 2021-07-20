@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Borrower;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
 
 /**
  * @method Borrower|null find($id, $lockMode = null, $lockVersion = null)
@@ -95,7 +96,19 @@ class BorrowerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
-    }
+    }    
 
-    
+    public function findOneByUser(User $user)
+    {
+
+         return $this->createQueryBuilder('p')
+
+            ->innerJoin('p.user', 'u')
+            ->andWhere('p.user = :user')
+            ->andWhere("u.roles LIKE '%ROLE_BORROWER%'")
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

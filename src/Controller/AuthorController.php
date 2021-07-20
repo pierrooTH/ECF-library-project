@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface; 
 
 /**
  * @Route("/author")
@@ -18,10 +19,22 @@ class AuthorController extends AbstractController
     /**
      * @Route("/", name="author_index", methods={"GET"})
      */
-    public function index(AuthorRepository $authorRepository): Response
+    public function index(AuthorRepository $authorRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        // return $this->render('author/index.html.twig', [
+        //     'authors' => $authorRepository->findAll(),
+        // ]);
+
+        $donnees = $this->getDoctrine()->getRepository(Author::class)->findBy([],['id' => 'ASC']);
+
+        $author = $paginator->paginate(
+            $donnees, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            15 // Nombre de résultats par page
+        );
+        
         return $this->render('author/index.html.twig', [
-            'authors' => $authorRepository->findAll(),
+            'authors' => $author,
         ]);
     }
 
