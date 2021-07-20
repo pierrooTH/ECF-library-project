@@ -26,7 +26,7 @@ class BorrowerType extends AbstractType
             ->add('phoneNumber')
             ->add('active')
             ->add('creationDate')
-            ->add('modificationDate')
+            //->add('modificationDate')
             // ->add('user', EntityType::class, [
             //     // looks for choices from this entity
             //     'class' => User::class,

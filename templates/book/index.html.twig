@@ -13,6 +13,7 @@
                 <th>EditionYears</th>
                 <th>PagesNumber</th>
                 <th>CodeIsbn</th>
+                <th>Author</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -24,6 +25,7 @@
                 <td>{{ book.editionYears }}</td>
                 <td>{{ book.pagesNumber }}</td>
                 <td>{{ book.codeIsbn }}</td>
+                <td>{{ book.author.lastname }} {{ book.author.firstname }}</td>
                 <td>
                     <a href="{{ path('book_show', {'id': book.id}) }}">show</a>
                 {% if is_granted('ROLE_ADMIN') %}
