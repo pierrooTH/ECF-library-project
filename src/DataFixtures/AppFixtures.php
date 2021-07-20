@@ -97,71 +97,57 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
 
     public function loadGenres(ObjectManager $manager)
     {
-        $genre = new Genre();
-        $genre->setName('poésie');
-        $manager->persist($genre);
-        $genres[] = $genre;
+        $bookGenres = [
+            1 => [
+                'name'=>'poésie'
+            ],
+            2 => [
+                'name'=>'roman historique',
+            ],
+            3 => [
+                'name'=>'roman d\'amour',
+            ],
+            4 => [
+                'name'=>'roman d\'aventure',
+            ],
+            5 => [
+                'name'=>'science-fiction',
+            ],
+            6 => [
+                'name'=>'fantasy',
+            ],
+            7 => [
+                'name'=>'biographie',
+            ],
+            8 => [
+                'name'=>'témoignage',
+            ],
+            9 => [
+                'name'=>'théâtre',
+            ],
+            10 => [
+                'name'=>'essai',
+            ],
+            11 => [
+                'name'=>'journal intime'
+            ],
+            12 => [
+                'name'=>'nouvelle'
+            ],
+            13 => [
+                'name'=>'conte'
+            ],
+        ];
+        $genres= [];
 
-        $genre = new Genre();
-        $genre->setName('nouvelle');
-        $manager->persist($genre);
-        $genres[] = $genre;
+        foreach($bookGenres as $key => $value){
+            $genre = new Genre();
+            $genre->setName($value['name']);
 
-        $genre = new Genre();
-        $genre->setName('roman historique');
-        $manager->persist($genre);
-        $genres[] = $genre;
+            $manager->persist($genre);
 
-        $genre = new Genre();
-        $genre->setName("roman d'amour");
-        $manager->persist($genre);
-        $genres[] = $genre;
-
-        $genre = new Genre();
-        $genre->setName("roman d'avanture");
-        $manager->persist($genre);
-        $genres[] = $genre;
-
-        $genre = new Genre();
-        $genre->setName('science-fiction');
-        $manager->persist($genre);
-        $genres[] = $genre;
-
-        $genre = new Genre();
-        $genre->setName('fantasy');
-        $manager->persist($genre);
-        $genres[] = $genre;
-
-        $genre = new Genre();
-        $genre->setName('biographie');
-        $manager->persist($genre);
-        $genres[] = $genre;
-
-        $genre = new Genre();
-        $genre->setName('conte');
-        $manager->persist($genre);
-        $genres[] = $genre;
-
-        $genre = new Genre();
-        $genre->setName('témoignage');
-        $manager->persist($genre);
-        $genres[] = $genre;
-
-        $genre = new Genre();
-        $genre->setName('théâtre');
-        $manager->persist($genre);
-        $genres[] = $genre;
-
-        $genre = new Genre();
-            $genre->setName('essai');
-        $manager->persist($genre);
-        $genres[] = $genre;
-
-        $genre = new Genre();
-        $genre->setName('journal intime');
-        $manager->persist($genre);
-        $genres[] = $genre;
-
+            $genres[] = $genre;
+        }
         return $genres;
 
     }
