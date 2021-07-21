@@ -178,4 +178,9 @@ class Book
         }
         return $this;
     }
+
+    // public function availibility(Loan $loan): self
+    // {
+        
+    // }
 }

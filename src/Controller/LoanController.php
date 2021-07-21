@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Loan;
+use App\Entity\Borrower;
 use App\Form\LoanType;
 use App\Repository\LoanRepository;
 use App\Repository\BorrowerRepository;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface; 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @Route("/loan")
@@ -77,8 +79,16 @@ class LoanController extends AbstractController
     /**
      * @Route("/{id}", name="loan_show", methods={"GET"})
      */
-    public function show(Loan $loan): Response
+    public function show(Loan $loan, BorrowerRepository $borrowerRepository): Response
     {
+        if ($this->isGranted('ROLE_BORROWER')) {
+
+            $user = $this->getUser();
+            $borrower = $borrowerRepository->findOneByUser($user);
+            if (!$borrower->getLoans()->contains($loan)) {
+                throw new NotFoundHttpException();
+            }
+        }
         return $this->render('loan/show.html.twig', [
             'loan' => $loan,
         ]);
@@ -117,4 +127,5 @@ class LoanController extends AbstractController
 
         return $this->redirectToRoute('loan_index');
     }
+
 }

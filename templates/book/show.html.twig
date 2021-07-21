@@ -31,6 +31,16 @@
                 <th>Author</th>
                 <td>{{ book.author.lastname }} {{ book.author.firstname }}</td>
             </tr>
+            <tr class='table-secondary'>
+                <th>Genre</th>
+                <td>
+                    <p>
+                        {% for genre in book.genres %}
+                            {{ genre.name }}{% if not loop.last%},{% endif %}
+                        {% endfor %}
+                    </p>
+                </td>
+            </tr>
         </tbody>
     </table>
 
