@@ -17,25 +17,23 @@ use Knp\Component\Pager\PaginatorInterface;
 class HomePageController extends AbstractController
 {
     /**
-     * @Route("/", name="home_index", methods={"GET"})
+     * @Route("/", name="home_index", methods={"GET", "POST"})
      */
     public function index(BookRepository $bookRepository, Request $request, PaginatorInterface $paginator): Response
     {
-        // return $this->render('book/index.html.twig', [
-        //     'books' => $bookRepository->findAll(),
-        // ]);
+            $donnees = $this->getDoctrine()->getRepository(Book::class)->findBy([],['id' => 'ASC']);
 
-        $donnees = $this->getDoctrine()->getRepository(Book::class)->findBy([],['id' => 'ASC']);
+            $book = $paginator->paginate(
+                $donnees, // Requête contenant les données à paginer (ici nos articles)
+                $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+                15 // Nombre de résultats par page
+            );
 
-        $book = $paginator->paginate(
-            $donnees, // Requête contenant les données à paginer (ici nos articles)
-            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            15 // Nombre de résultats par page
-        );
-        
-        return $this->render('book/index.html.twig', [
-            'books' => $book,
-        ]);
+            return $this->render('book/index.html.twig', [
+                'books' => $book,
+            ]);
     }
+
+   
 
 }

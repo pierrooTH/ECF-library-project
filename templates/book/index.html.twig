@@ -10,6 +10,7 @@
             <tr class='table-secondary'>
                 <th scope="col">Id</th>
                 <th scope="col">Title</th>
+                <th scope="col">Availibility</th>
                 <th scope="col">EditionYears</th>
                 <th scope="col">PagesNumber</th>
                 <th scope="col">CodeIsbn</th>
@@ -23,6 +24,11 @@
             <tr class='table-secondary'>
                 <td>{{ book.id }}</td>
                 <td><a href="{{ path('book_show', {'id': book.id}) }}">{{ book.title }}</a></td>
+                {% if book.isAvailable %}
+                <td class="available">Disponible</td>
+                {% else %}
+                <td class="no-available">Non disponible</td>
+                {% endif %}
                 <td>{{ book.editionYears }}</td>
                 <td>{{ book.pagesNumber }}</td>
                 <td>{{ book.codeIsbn }}</td>

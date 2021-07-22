@@ -16,6 +16,14 @@
                 <td>{{ book.title }}</td>
             </tr>
             <tr class='table-secondary'>
+                <th>Availibility</th>
+                {% if book.isAvailable %}
+                <td class="available">Disponible</td>
+                {% else %}
+                <td class="no-available">Non disponible</td>
+                {% endif %}
+            </tr>
+            <tr class='table-secondary'>
                 <th>EditionYears</th>
                 <td>{{ book.editionYears }}</td>
             </tr>

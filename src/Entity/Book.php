@@ -179,8 +179,17 @@ class Book
         return $this;
     }
 
-    // public function availibility(Loan $loan): self
-    // {
-        
-    // }
+    public function isAvailable(): bool
+    {
+        // s'il n'y a pas d'emprunt, le livre est dispo
+        // s'il y a des emprunts mais qu'ils ont tous été retournés,
+        // alors le livre est dispo
+
+        foreach ($this->getLoans() as $loan) {
+            if ($loan->getReturnDate() == null) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -38,7 +38,8 @@ class LoanController extends AbstractController
                 return $this->render('loan/index.html.twig', [
                     'loans' => $loans,
                 ]);
-            } elseif ($this->isGranted('ROLE_ADMIN')) {
+            } 
+            elseif ($this->isGranted('ROLE_ADMIN')) {
                 $donnees = $this->getDoctrine()->getRepository(Loan::class)->findBy([],['id' => 'ASC']);
 
                 $loan = $paginator->paginate(
